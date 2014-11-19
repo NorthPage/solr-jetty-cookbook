@@ -1,0 +1,6 @@
+NO_START=0 # Start on boot
+JAVA_OPTIONS="-Dsolr.solr.home=<%= @solr_dir %>/solr -Dsolr.data.dir=<%= @solr_data %> $JAVA_OPTIONS"
+JAVA_HOME=<%= @java_home %>
+JETTY_HOME=<%= @solr_dir %>
+JETTY_USER=<%= @solr_user %>
+JETTY_LOGS=<%= @solr_dir %>/logs
