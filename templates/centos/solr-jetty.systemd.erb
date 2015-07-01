@@ -1,0 +1,20 @@
+##
+# systemd unit for solr-jetty
+##
+
+[Unit]
+Description=solr-jetty
+After=syslog.target
+
+[Service]
+Type=forking
+EnvironmentFile=<%= @config %>
+User=<%= @solr_user %>
+PIDFile=/var/run/jetty.pid
+WorkingDirectory=<%= @solr_dir %>
+ExecStart=<%= @java %> -Dsolr.solr.home=<%= @solr_dir %>/solr -Dsolr.data.dir=<%= @solr_data %> \
+  -Djetty.logs=<%= @solr_dir %>/logs -Djetty.home=<%= @solr_dir %> -Djava.io.tmpdir=/tmp -jar \
+  <%= @solr_dir %>/start.jar --daemon
+
+[Install]
+WantedBy=multi-user.target
