@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-
 describe 'solr-jetty::default' do
 
   platforms = {
-      'centos' => ['6.6'],
-      'ubuntu' => ['14.04']
+    'centos' => ['6.6', '7.0'],
+    'ubuntu' => ['14.04']
   }
 
   platforms.each do |platform, versions|
@@ -13,7 +12,8 @@ describe 'solr-jetty::default' do
 
       context "on #{platform.capitalize} #{version}" do
         let (:chef_run) do
-          ChefSpec::SoloRunner.new(log_level: :error, platform: platform, version: version) do |node|
+          ChefSpec::SoloRunner.new(log_level: :error, platform: platform, version: version,
+                                   file_cache_path: '/var/chef/cache') do |node|
             # set additional node attributes here
           end.converge(described_recipe)
         end

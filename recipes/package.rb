@@ -2,7 +2,7 @@
 # Cookbook Name:: solr-jetty
 # Recipe:: package
 #
-# Copyright (C) 2014 NorthPage
+# Copyright (C) 2015 NorthPage
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -59,32 +59,45 @@ bash 'copy_solr' do
   action :nothing
 end
 
-if platform_family?('rhel')
-  solr_jetty_config = '/etc/sysconfig/solr'
-  solr_jetty_init = '/etc/init.d/solr'
-elsif platform_family?('debian')
-  solr_jetty_config = '/etc/default/solr'
-  solr_jetty_init = '/etc/init.d/solr'
+if node['solr-jetty']['init_system'] == 'systemd'
+  solr_jetty_init = '/usr/lib/systemd/system/solr.service'
+  init_template_source = 'solr-jetty.systemd.erb'
 else
-  solr_jetty_config = '/etc/sysconfig/solr'
   solr_jetty_init = '/etc/init.d/solr'
+  init_template_source = 'solr-jetty.sysv.erb'
 end
 
-cookbook_file solr_jetty_init do
-  source 'solr-jetty-init-sh'
-  owner 'root'
-  mode '0755'
-  action :create
+case node['platform_family']
+  when 'rhel'
+    solr_jetty_config = '/etc/sysconfig/solr'
+  when 'debian'
+    solr_jetty_config = '/etc/default/solr'
+  else
+    solr_jetty_config = '/etc/sysconfig/solr'
 end
 
 template solr_jetty_config do
   source 'solr-jetty-config.erb'
   variables({
-    :java_home => node['java']['java_home'],
+    :java_home  => node['java']['java_home'],
+    :solr_dir   => "#{node['solr-jetty']['install_dir']}/solr",
+    :solr_data  => "#{node['solr-jetty']['data_dir']}",
+    :solr_user  => node['solr-jetty']['user']
+  })
+end
+
+template solr_jetty_init do
+  source init_template_source
+  owner 'root'
+  mode '0755'
+  variables({
+    :config => solr_jetty_config,
+    :java => "#{node['java']['java_home']}/bin/java",
+    :solr_user => node['solr-jetty']['user'],
     :solr_dir => "#{node['solr-jetty']['install_dir']}/solr",
     :solr_data => "#{node['solr-jetty']['data_dir']}",
-    :solr_user => node['solr-jetty']['user']
   })
+  action :create
 end
 
 service 'solr' do

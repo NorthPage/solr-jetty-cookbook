@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-
 describe 'solr-jetty::prep' do
 
   platforms = {
-      'centos' => ['6.6'],
-      'ubuntu' => ['14.04']
+    'centos' => ['6.6', '7.0'],
+    'ubuntu' => ['14.04']
   }
 
   platforms.each do |platform, versions|
@@ -24,6 +23,10 @@ describe 'solr-jetty::prep' do
 
         it 'should create the solr user' do
           expect(chef_run).to create_user('solr')
+        end
+
+        it 'should create the solr data directory' do
+          expect(chef_run).to create_directory('/opt/solr-data').with_owner('solr')
         end
       end
     end

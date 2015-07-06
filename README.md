@@ -7,7 +7,7 @@ uses the libarchive cookbook and allows running as a non-root user.
 
 ## Supported Platforms
 
-* Centos 6.5
+* Centos 6.6, 7.0
 * Ubuntu 14.04
 
 ## Attributes
@@ -89,7 +89,7 @@ Include `solr-jetty` in your node's `run_list`:
 ## License and Authors
 
 Author:: E Camden Fisher (<camden@northpage.com>)  
-Copyright (C) 2014 NorthPage
+Copyright (C) 2015 NorthPage
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
