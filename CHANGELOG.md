@@ -9,3 +9,7 @@
 # 0.2.1
 
 * Change Systemd unit for solr to be a simple service
+
+# 0.2.2
+
+* Update libarchive cookbook
