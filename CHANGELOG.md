@@ -13,3 +13,7 @@
 # 0.2.2
 
 * Update libarchive cookbook
+
+# 0.3.0
+
+* Update the iptables cookbook to latest (3.0.1)
