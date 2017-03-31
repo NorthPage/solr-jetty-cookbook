@@ -2,7 +2,7 @@
 # Cookbook Name:: solr-jetty
 # Recipe:: package
 #
-# Copyright (C) 2015 NorthPage
+# Copyright (C) 2015-2017 NorthPage
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@ remote_file src_filepath do
   source node['solr-jetty']['url']
   owner node['solr-jetty']['user']
   action :create_if_missing
-  notifies :extract, "libarchive_file[extract_solr]", :immediately
-  notifies :run, "bash[backup_existing]", :immediately
-  notifies :run, "bash[copy_solr]", :immediately
+  notifies :extract, 'libarchive_file[extract_solr]', :immediately
+  notifies :run, 'bash[backup_existing]', :immediately
+  notifies :create, 'directory[solr_collections]', :immediately
 end
 
-libarchive_file "extract_solr" do
+libarchive_file 'extract_solr' do
   path src_filepath
-  extract_to "#{node['solr-jetty']['install_dir']}"
+  extract_to node['solr-jetty']['install_dir']
   owner node['solr-jetty']['user']
   extract_options :no_overwrite
   action :nothing
@@ -45,61 +45,49 @@ bash 'backup_existing' do
   code <<-EOH
     mv solr solr.upgade-to-#{node['solr-jetty']['version']}
   EOH
-  only_if { ::File.exist?("#{node['solr-jetty']['install_dir']}/solr") }
+  only_if { ::File.directory?("#{node['solr-jetty']['install_dir']}/solr") }
   action :nothing
+end
+
+directory 'solr_collections' do
+  path "#{node['solr-jetty']['install_dir']}/solr"
+  recursive true
+  owner node['solr-jetty']['user']
+  action :nothing
+  notifies :run, 'bash[copy_solr]', :immediately
 end
 
 bash 'copy_solr' do
   cwd node['solr-jetty']['install_dir']
   code <<-EOH
-    cp -pr #{dirname}/example solr
-    # chown -Rh #{node['solr-jetty']['user']} solr
+    cp -pr #{dirname}/server/solr #{node['solr-jetty']['install_dir']}/solr/
+    chown -Rh #{node['solr-jetty']['user']} solr
   EOH
-  not_if { ::File.exist?("#{node['solr-jetty']['install_dir']}/solr") }
   action :nothing
 end
 
-if node['solr-jetty']['init_system'] == 'systemd'
-  solr_jetty_init = '/usr/lib/systemd/system/solr.service'
-  init_template_source = 'solr-jetty.systemd.erb'
-else
-  solr_jetty_init = '/etc/init.d/solr'
-  init_template_source = 'solr-jetty.sysv.erb'
-end
-
-case node['platform_family']
-  when 'rhel'
-    solr_jetty_config = '/etc/sysconfig/solr'
-  when 'debian'
-    solr_jetty_config = '/etc/default/solr'
-  else
-    solr_jetty_config = '/etc/sysconfig/solr'
-end
-
-template solr_jetty_config do
-  source 'solr-jetty-config.erb'
-  variables({
-    :java_home  => node['java']['java_home'],
-    :solr_dir   => "#{node['solr-jetty']['install_dir']}/solr",
-    :solr_data  => "#{node['solr-jetty']['data_dir']}",
-    :solr_user  => node['solr-jetty']['user']
-  })
-end
-
-template solr_jetty_init do
-  source init_template_source
+template '/etc/systemd/system/solr.service' do
+  source 'solr-jetty.systemd.erb'
   owner 'root'
-  mode '0755'
-  variables({
-    :config => solr_jetty_config,
-    :java => "#{node['java']['java_home']}/bin/java",
-    :solr_user => node['solr-jetty']['user'],
-    :solr_dir => "#{node['solr-jetty']['install_dir']}/solr",
-    :solr_data => "#{node['solr-jetty']['data_dir']}",
-  })
+  mode '0644'
+  variables(
+    datadir: node['solr-jetty']['data_dir'],
+    homedir: node['solr-jetty']['home_dir'],
+    installdir: "#{node['solr-jetty']['install_dir']}/#{dirname}",
+    memory: node['solr-jetty']['memory'],
+    port: node['solr-jetty']['port'],
+    serverdir: "#{node['solr-jetty']['install_dir']}/#{dirname}/server",
+    user: node['solr-jetty']['user']
+  )
   action :create
+  notifies :run, 'bash[reload systemd daemon]', :immediately
+end
+
+bash 'reload systemd daemon' do
+  code 'systemctl daemon-reload'
+  action :nothing
 end
 
 service 'solr' do
-  action :enable
+  action [:enable, :start]
 end

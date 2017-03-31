@@ -7,8 +7,8 @@ uses the libarchive cookbook and allows running as a non-root user.
 
 ## Supported Platforms
 
-* Centos 6.6, 7.0
-* Ubuntu 14.04
+* Centos 7.0
+* Ubuntu 16.04
 
 ## Attributes
 

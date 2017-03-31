@@ -3,8 +3,8 @@ require 'spec_helper'
 describe 'solr-jetty::default' do
 
   platforms = {
-    'centos' => ['6.6', '7.0'],
-    'ubuntu' => ['14.04']
+    'centos' => ['7.0'],
+    'ubuntu' => ['16.04']
   }
 
   platforms.each do |platform, versions|

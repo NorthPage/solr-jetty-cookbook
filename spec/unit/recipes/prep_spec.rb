@@ -3,8 +3,8 @@ require 'spec_helper'
 describe 'solr-jetty::prep' do
 
   platforms = {
-    'centos' => ['6.6', '7.0'],
-    'ubuntu' => ['14.04']
+    'centos' => ['7.0'],
+    'ubuntu' => ['16.04']
   }
 
   platforms.each do |platform, versions|
@@ -26,7 +26,17 @@ describe 'solr-jetty::prep' do
         end
 
         it 'should create the solr data directory' do
-          expect(chef_run).to create_directory('/opt/solr-data').with_owner('solr')
+          expect(chef_run).to create_directory('solr_data').with_path('/opt/solr-data')
+        end
+
+        it 'should install lsof for redhat platforms' do
+          if platform == 'centos'
+            expect(chef_run).to install_package('lsof')
+            expect(chef_run).to upgrade_package('lsof')
+          else
+            expect(chef_run).to_not install_package('lsof')
+            expect(chef_run).to_not upgrade_package('lsof')
+          end
         end
       end
     end

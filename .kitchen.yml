@@ -8,11 +8,13 @@ driver:
 
 provisioner:
   name: chef_zero
+  environments_path: test/environments
+  client_rb:
+    environment: kitchen
 
 platforms:
-  - name: ubuntu-14.04
-  - name: centos-6.6
-  - name: centos-7.0
+  - name: ubuntu-16.04
+  - name: centos-7.3
 
 suites:
   - name: default

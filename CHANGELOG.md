@@ -17,3 +17,8 @@
 # 0.3.0
 
 * Update the iptables cookbook to latest (3.0.1)
+
+# 0.4.0
+
+* Update to use Solr 6.5.0 as the default version
+* Deprecate old versions of linux (centos 6.x, ubuntu 14.04)
