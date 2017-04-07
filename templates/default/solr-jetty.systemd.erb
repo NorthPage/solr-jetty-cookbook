@@ -1,0 +1,27 @@
+##
+# systemd unit for Standalone Apache Solr
+# Install Directory: <%= @installdir %>
+# Server Directory: <%= @serverdir %>
+# Solr Home Directory: <%= @homedir %>
+# Solr Data Directory: <%= @datadir %>
+# Memory: <%= @memory %>
+# Port: <%= @port %>
+# User: <%= @user %>
+##
+
+[Unit]
+Description=Apache Solr
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+User=solr
+WorkingDirectory=<%= @installdir %>
+PIDFile=<%= @installdir %>/bin/solr-<%= @port %>.pid
+ExecStart=<%= @installdir %>/bin/solr start  -m '<%= @memory %>' -p '<%= @port %>' -s <%= @homedir %> -d <%= @serverdir %> -noprompt -V -a '-Dsolr.data.dir=<%= @datadir %>'
+User=<%= @user %>
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
