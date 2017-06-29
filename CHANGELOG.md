@@ -22,3 +22,7 @@
 
 * Update to use Solr 6.5.0 as the default version
 * Deprecate old versions of linux (centos 6.x, ubuntu 14.04)
+
+# 0.5.0
+
+* Update to use Solr 6.6.0 as the default version

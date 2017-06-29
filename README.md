@@ -77,7 +77,7 @@ Include `solr-jetty` in your node's `run_list`:
 }
 ```
 
-* If `node['solr-jetty']['install_java']` is `true`, it installs and configures oracle java 7
+* If `node['solr-jetty']['install_java']` is `true`, it installs and configures oracle java 8
 * If `node['solr-jetty']['manage_user']` is `true`, it will create and manage `node['solr-jetty']['user']`
 * Downloads the solr archive (for the given version) and extracts it into `node['solr-jetty']['install_dir']`
 * If `node['solr-jetty']['install_dir']`/solr exists, it will be moved
@@ -88,8 +88,8 @@ Include `solr-jetty` in your node's `run_list`:
 
 ## License and Authors
 
-Author:: E Camden Fisher (<camden@northpage.com>)  
-Copyright (C) 2015 NorthPage
+Author:: E Camden Fisher (<camden@northpage.com>)
+Copyright (C) 2015-2017 NorthPage
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

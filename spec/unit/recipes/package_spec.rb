@@ -23,7 +23,7 @@ describe 'solr-jetty::package' do
         end
 
         it 'should download the solr archive' do
-          tgz = '/var/chef/cache/solr-6.5.0.tgz'
+          tgz = '/var/chef/cache/solr-6.6.0.tgz'
           expect(chef_run).to create_remote_file_if_missing(tgz)
         end
 
@@ -53,7 +53,7 @@ describe 'solr-jetty::package' do
         end
 
         it 'should notify installation scripts when an archive is downloaded' do
-          archive = chef_run.remote_file('/var/chef/cache/solr-6.5.0.tgz')
+          archive = chef_run.remote_file('/var/chef/cache/solr-6.6.0.tgz')
           expect(archive).to notify('libarchive_file[extract_solr]').immediately
           expect(archive).to notify('bash[backup_existing]').immediately
           expect(archive).to notify('directory[solr_collections]').immediately

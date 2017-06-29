@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe file('/opt/solr-6.5.0') do
+describe file('/opt/solr-6.6.0') do
   it { should be_directory }
 end
 
