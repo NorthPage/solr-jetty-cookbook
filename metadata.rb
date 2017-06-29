@@ -4,7 +4,7 @@ maintainer_email 'camden@northpage.com'
 license          'Apache 2.0'
 description      'Installs/Configures solr-jetty'
 long_description 'Installs/Configures solr-jetty'
-version          '0.4.0'
+version          '0.5.0'
 
 depends 'libarchive', '~> 0.7'
 depends 'java', '~> 1.0'

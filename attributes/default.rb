@@ -1,4 +1,4 @@
-default['solr-jetty']['version']      = '6.5.0'
+default['solr-jetty']['version']      = '6.6.0'
 default['solr-jetty']['url']          = "https://archive.apache.org/dist/lucene/solr/#{node['solr-jetty']['version']}/solr-#{node['solr-jetty']['version']}.tgz"
 default['solr-jetty']['install_dir']  = '/opt'
 default['solr-jetty']['data_dir']     = "#{node['solr-jetty']['install_dir']}/solr-data"
